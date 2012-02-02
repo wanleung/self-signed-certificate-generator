@@ -1,0 +1,13 @@
+This is a program for the users to gernate their own self-signed certificate.
+
+Usage:  ./apache2-ssl-certificate [[OPTION] [VALUE]]...
+
+OPTIONS:
+  -h | -help | --help -- To Show This Help
+  -f | --force        -- Force to generate the cert
+  -d | -days | --days -- cert to expire after x days, default is 365
+  -p | -path | --path -- Path of the cert will be stored,
+                         default is /etc/apache/ssl
+  -n | -name | --name -- the name of the cert, default is apache
+  -b | -bit  | --bit  -- length of the key, default is 1024
+
