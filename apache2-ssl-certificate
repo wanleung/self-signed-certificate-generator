@@ -1,0 +1,107 @@
+#!/bin/sh -e
+
+#    self-signed certificate generator
+#    Copyright (C) 2007-2012 Wan Leung Wong (wanleungwong at gmail dot com)
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+DAYS="365"
+CERTPATH="/etc/apache2/ssl"
+CERTNAME="apache"
+KEYBIT="2048"
+FORCE="0";
+
+usage(){
+    echo "This is a program for the users to gernate their own self-signed certificate."
+    echo
+    echo "Usage:  $0 [[OPTION] [VALUE]]..." 
+    echo
+    echo "OPTIONS:"
+    echo "  -h | -help | --help -- To Show This Help"
+    echo "  -f | --force        -- Force to generate the cert"
+    echo "  -d | -days | --days -- cert to expire after x days, default is 365"
+    echo "  -p | -path | --path -- Path of the cert will be stored,"
+    echo "                         default is /etc/apache/ssl"
+    echo "  -n | -name | --name -- the name of the cert, default is apache"
+    echo "  -b | -bit  | --bit  -- length of the key, default is 1024"
+    echo
+}
+
+createcert() {
+    if [ "$FORCE" != "1" -a -f $CERTPATH/$CERTNAME.pem ]; then
+        echo "$CERTPATH/$CERTNAME.pem exists!  Use \"$0 --force.\""
+        exit 0
+    fi
+    echo
+    echo creating selfsigned certificate
+    echo "replace it with one signed by a certification authority (CA)"
+    echo
+    echo enter your ServerName at the Common Name prompt
+    echo
+    echo If you want your certificate to expire after x days call this programm
+    echo with "--days x"
+
+    mkdir -p "$CERTPATH/"
+
+    export RANDFILE=/dev/random
+    openssl req $@ -new -x509 -days $DAYS -nodes \
+    -newkey rsa:$KEYBIT \
+    -out $CERTPATH/$CERTNAME.pem \
+    -keyout $CERTPATH/$CERTNAME.pem
+    chmod 600 $CERTPATH/$CERTNAME.pem
+}
+
+case $1 in
+    -h|help|--help)
+        usage
+        exit 0
+    ;;
+esac
+
+until [ -z "$1" ]  # Until all parameters used up . . .
+do
+    case $1 in
+        --force|-f|-force)
+	    FORCE="1"
+	    shift
+        ;;
+	--days|-d|-days)
+	    DAYS=$2
+	    shift
+	    shift
+	;;
+	--path|-p|-path)
+	    CERTPATH=$2
+	    shift
+	    shift
+	;;
+	--name|-n|-name)
+	    CERTNAME=$2
+	    shift
+	    shift
+	;;
+	--bit|-n|-bit)
+	    KEYBIT=$2
+	    shift
+	    shift
+	;;
+	*)
+	    usage
+	    exit 0
+	;;
+    esac
+done
+createcert
+
+
