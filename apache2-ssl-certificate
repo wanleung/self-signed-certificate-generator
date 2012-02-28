@@ -30,11 +30,11 @@ usage(){
     echo "OPTIONS:"
     echo "  -h | -help | --help -- To Show This Help"
     echo "  -f | --force        -- Force to generate the cert"
-    echo "  -d | -days | --days -- cert to expire after x days, default is 365"
+    echo "  -d | -days | --days -- cert to expire after x days, default is $DAYS"
     echo "  -p | -path | --path -- Path of the cert will be stored,"
     echo "                         default is /etc/apache/ssl"
     echo "  -n | -name | --name -- the name of the cert, default is apache"
-    echo "  -b | -bit  | --bit  -- length of the key, default is 1024"
+    echo "  -b | -bit  | --bit  -- length of the key, default is $KEYBIT"
     echo
 }
 
