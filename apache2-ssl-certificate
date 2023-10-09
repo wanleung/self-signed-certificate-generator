@@ -19,7 +19,7 @@
 DAYS="365"
 CERTPATH="/etc/apache2/ssl"
 CERTNAME="apache"
-KEYBIT="2048"
+KEYBIT="8192"
 FORCE="0";
 
 usage(){
